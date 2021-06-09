@@ -1,0 +1,19 @@
+name: Package and release
+
+on:
+  push:
+    tags:
+      - "**"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clone project
+        uses: actions/checkout@v1
+
+      - name: Package and release for TBCC
+        uses: BigWigsMods/packager@v1
+        with:
+          args: -g bcc
