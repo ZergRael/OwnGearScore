@@ -1,8 +1,8 @@
 ## Interface: 20501
 ## Title: OwnGearScore
 ## Notes: Quickly and easily judge your current itemization level
-## Version: 0.1 (based on 3x04y05)
-## Author: zergrael (original author Mirrikat45)
+## Version: 0.1
+## Author: zergrael (original authors Mirrikat45 and janit88)
 ## SavedVariables: GS_Settings
 
 informationLite.lua
