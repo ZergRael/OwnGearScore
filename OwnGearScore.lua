@@ -191,11 +191,23 @@ PersonalGearScore:SetText("gs: 0")
 PersonalGearScore:SetPoint("BOTTOMLEFT",PaperDollFrame,"TOPLEFT",72,-253)
 PersonalGearScore:Show()
 
+PaperDollFrame:CreateFontString("GearScoreLabel")
+GearScoreLabel:SetFont("Fonts\\FRIZQT__.TTF", 10)
+GearScoreLabel:SetText("GearScore")
+GearScoreLabel:SetPoint("BOTTOMLEFT",PaperDollFrame,"TOPLEFT",72,-265)
+GearScoreLabel:Show()
+
 PaperDollFrame:CreateFontString("PersonalItemLevel")
 PersonalItemLevel:SetFont("Fonts\\FRIZQT__.TTF", 10)
 PersonalItemLevel:SetText("ilvl: 0")
 PersonalItemLevel:SetPoint("BOTTOMRIGHT",PaperDollFrame,"TOPRIGHT",-90,-253)
 PersonalItemLevel:Show()
+
+PaperDollFrame:CreateFontString("ItemLevelLabel")
+ItemLevelLabel:SetFont("Fonts\\FRIZQT__.TTF", 10)
+ItemLevelLabel:SetText("ItemLevel")
+ItemLevelLabel:SetPoint("BOTTOMRIGHT",PaperDollFrame,"TOPRIGHT",-90,-265)
+ItemLevelLabel:Show()
 
 SlashCmdList["OGS"] = GS_MANSET
 SLASH_OGS1 = "/gs"
