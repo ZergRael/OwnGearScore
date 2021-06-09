@@ -5,6 +5,10 @@ on:
     tags:
       - "**"
 
+env:
+  CF_API_KEY: ${{ secrets.CF_API_KEY }}
+  GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -16,4 +20,4 @@ jobs:
       - name: Package and release for TBCC
         uses: BigWigsMods/packager@v1
         with:
-          args: -g bcc
+          args: -g bcc -p 492599
