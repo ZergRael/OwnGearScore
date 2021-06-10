@@ -36,7 +36,7 @@ end
 function GearScore_GetScore(Name, Target)
 	local TargetName = UnitName(Target)
 	if (Name ~= TargetName) then
-		return 0,0
+		return 0, 0
 	end
 
 	if ( UnitIsPlayer(Target) ) then
@@ -176,7 +176,7 @@ function GearScore_GetQuality(ItemScore)
 		return 0, 0, 0, "Trash"
 	end
 
-	for i = 0,6 do
+	for i = 0, 6 do
 		if ( ItemScore > i * 1000 ) and ( ItemScore <= ( ( i + 1 ) * 1000 ) ) then
 			local Red = GS_Quality[( i + 1 ) * 1000].Red["A"] + (((ItemScore - GS_Quality[( i + 1 ) * 1000].Red["B"])*GS_Quality[( i + 1 ) * 1000].Red["C"])*GS_Quality[( i + 1 ) * 1000].Red["D"])
 			local Blue = GS_Quality[( i + 1 ) * 1000].Green["A"] + (((ItemScore - GS_Quality[( i + 1 ) * 1000].Green["B"])*GS_Quality[( i + 1 ) * 1000].Green["C"])*GS_Quality[( i + 1 ) * 1000].Green["D"])
@@ -267,10 +267,10 @@ end
 function GS_MANSET(Command)
 	local output
 	if ( strlower(Command) == "" ) or ( strlower(Command) == "options" ) or ( strlower(Command) == "option" ) or ( strlower(Command) == "help" ) then
-		for i,v in ipairs(GS_CommandList) do
+		for i, v in ipairs(GS_CommandList) do
 			DEFAULT_CHAT_FRAME:AddMessage(v)
 		end 
-		for i,v in pairs(GS_Settings) do
+		for i, v in pairs(GS_Settings) do
 			if (v == 1) then
 				output = i..": On"
 			else
@@ -322,25 +322,25 @@ PaperDollFrame:HookScript("OnShow", MyPaperDoll)
 PaperDollFrame:CreateFontString("PersonalGearScore")
 PersonalGearScore:SetFont("Fonts\\FRIZQT__.TTF", 10)
 PersonalGearScore:SetText("gs: 0")
-PersonalGearScore:SetPoint("BOTTOMLEFT",PaperDollFrame,"TOPLEFT",72,-253)
+PersonalGearScore:SetPoint("BOTTOMLEFT", PaperDollFrame, "TOPLEFT", 72, -253)
 PersonalGearScore:Show()
 
 PaperDollFrame:CreateFontString("GearScoreLabel")
 GearScoreLabel:SetFont("Fonts\\FRIZQT__.TTF", 10)
 GearScoreLabel:SetText("GearScore")
-GearScoreLabel:SetPoint("BOTTOMLEFT",PaperDollFrame,"TOPLEFT",72,-265)
+GearScoreLabel:SetPoint("BOTTOMLEFT", PaperDollFrame, "TOPLEFT", 72, -265)
 GearScoreLabel:Show()
 
 PaperDollFrame:CreateFontString("PersonalItemLevel")
 PersonalItemLevel:SetFont("Fonts\\FRIZQT__.TTF", 10)
 PersonalItemLevel:SetText("ilvl: 0")
-PersonalItemLevel:SetPoint("BOTTOMRIGHT",PaperDollFrame,"TOPRIGHT",-90,-253)
+PersonalItemLevel:SetPoint("BOTTOMRIGHT", PaperDollFrame, "TOPRIGHT", -90, -253)
 PersonalItemLevel:Show()
 
 PaperDollFrame:CreateFontString("ItemLevelLabel")
 ItemLevelLabel:SetFont("Fonts\\FRIZQT__.TTF", 10)
 ItemLevelLabel:SetText("ItemLevel")
-ItemLevelLabel:SetPoint("BOTTOMRIGHT",PaperDollFrame,"TOPRIGHT",-90,-265)
+ItemLevelLabel:SetPoint("BOTTOMRIGHT", PaperDollFrame, "TOPRIGHT", -90, -265)
 ItemLevelLabel:Show()
 
 SlashCmdList["OGS"] = GS_MANSET
