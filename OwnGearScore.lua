@@ -11,10 +11,11 @@ function GearScore_OnEvent(GS_Nil, GS_EventName, GS_Prefix, GS_AddonMessage, GS_
 
 	if ( GS_EventName == "PLAYER_EQUIPMENT_CHANGED" ) then
 	    local MyGearScore, MyItemLevel = GearScore_GetScore(UnitName("player"), "player")
-		local Red, Blue, Green = GearScore_GetQuality(MyGearScore)
     	PersonalGearScore:SetText(MyGearScore)
-		PersonalGearScore:SetTextColor(Red, Green, Blue, 1)
 		PersonalItemLevel:SetText(MyItemLevel)
+		
+		local Red, Blue, Green = GearScore_GetQuality(MyGearScore)
+		PersonalGearScore:SetTextColor(Red, Green, Blue, 1)
 		PersonalItemLevel:SetTextColor(Red, Green, Blue, 1)
   	end
 
@@ -42,11 +43,8 @@ function GearScore_GetScore(Name, Target)
 	    local PlayerClass, PlayerEnglishClass = UnitClass(Target)
 		local GearScore = 0
 		local TempScore = 0
-		local PVPScore = 0
 		local ItemCount = 0
 		local LevelTotal = 0
-		local TempEquip = {}
-		local TempPVPScore = 0
 		local ItemLink
 
 		for i = 1, 18 do
@@ -54,7 +52,7 @@ function GearScore_GetScore(Name, Target)
         		ItemLink = GetInventoryItemLink(Target, i)
         		GS_ItemLinkTable = {}
 				if ( ItemLink ) then
-        			local ItemName, ItemLink, ItemRarity, ItemLevel, ItemMinLevel, ItemType, ItemSubType, ItemStackCount, ItemEquipLoc, ItemTexture = GetItemInfo(ItemLink)
+        			local _, ItemLink = GetItemInfo(ItemLink)
         			if ( GS_Settings["Detail"] == 1 ) then
 						GS_ItemLinkTable[i] = ItemLink
 					end
@@ -71,16 +69,13 @@ function GearScore_GetScore(Name, Target)
 				end
 			end
 		end
-	
-		if ( GearScore <= 0 ) and ( Name ~= UnitName("player") ) then
-			GearScore = 0
-			return 0,0
-		elseif ( Name == UnitName("player") ) and ( GearScore <= 0 ) then
-		    GearScore = 0
-		end
 
 		if ( ItemCount == 0 ) then
-			LevelTotal = 0
+			return 0, 0
+		end
+
+		if ( GearScore <= 0 ) then
+			GearScore = 0
 		end
  
 		return floor(GearScore), floor(LevelTotal/ItemCount)
@@ -122,14 +117,12 @@ end
 
 function GearScore_GetItemScore(ItemLink)
 	local QualityScale = 1
-	local PVPScale = 1
-	local PVPScore = 0
 	local GearScore = 0
 	if not ( ItemLink ) then
 		return 0, 0
 	end
 
-	local ItemName, ItemLink, ItemRarity, ItemLevel, ItemMinLevel, ItemType, ItemSubType, ItemStackCount, ItemEquipLoc, ItemTexture = GetItemInfo(ItemLink)
+	local _, ItemLink, ItemRarity, ItemLevel, _, _, _, _, ItemEquipLoc, _ = GetItemInfo(ItemLink)
 	local Table = {}
 	local Scale = 2.97
 	local ItemID = GetItemInfoFromHyperlink(ItemLink)
@@ -159,21 +152,15 @@ function GearScore_GetItemScore(ItemLink)
 				GearScore = 0
 				Red, Green, Blue = GearScore_GetQuality(1)
 			end
-			if ( PVPScale == 0.75 ) then
-				PVPScore = 1
-				GearScore = GearScore * 1
-			else
-				PVPScore = GearScore * 0
-			end
+
 			local percent = (GearScore_GetEnchantInfo(ItemLink, ItemEquipLoc) or 1)
 			GearScore = floor(GearScore * percent )
-			PVPScore = floor(PVPScore)
 
-			return GearScore, ItemLevel, GS_ItemTypes[ItemEquipLoc].ItemSlot, Red, Green, Blue, PVPScore, ItemEquipLoc, percent
+			return GearScore, ItemLevel, GS_ItemTypes[ItemEquipLoc].ItemSlot, Red, Green, Blue, ItemEquipLoc, percent
 		end
   	end
 
-  	return -1, ItemLevel, 50, 1, 1, 1, PVPScore, ItemEquipLoc, 1
+  	return -1, ItemLevel, 50, 1, 1, 1, ItemEquipLoc, 1
 end
 
 function GearScore_GetQuality(ItemScore)
@@ -232,7 +219,7 @@ function GearScore_HookItem(ItemName, ItemLink, Tooltip)
 		return
 	end
 
-	local ItemScore, ItemLevel, EquipLoc, Red, Green, Blue, PVPScore, ItemEquipLoc, enchantPercent = GearScore_GetItemScore(ItemLink)
+	local ItemScore, ItemLevel, EquipLoc, Red, Green, Blue, ItemEquipLoc, enchantPercent = GearScore_GetItemScore(ItemLink)
  	if ( ItemScore >= 0 ) then
 		if ( GS_Settings["Item"] == 1 ) then
   			if ( ItemLevel ) then
