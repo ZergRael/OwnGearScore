@@ -10,7 +10,7 @@ function GearScore_OnEvent(GS_Nil, GS_EventName, GS_Prefix, GS_AddonMessage, GS_
 	end
 
 	if ( GS_EventName == "PLAYER_EQUIPMENT_CHANGED" ) then
-		local MyGearScore, MyItemLevel = GearScore_GetScore(UnitName("player"), "player")
+		local MyGearScore, MyItemLevel = GearScore_GetPlayerScore()
 		PersonalGearScore:SetText(MyGearScore)
 		PersonalItemLevel:SetText(MyItemLevel)
 		
@@ -33,53 +33,47 @@ function GearScore_OnEvent(GS_Nil, GS_EventName, GS_Prefix, GS_AddonMessage, GS_
 	end
 end
 
-function GearScore_GetScore(Name, Target)
-	local TargetName = UnitName(Target)
-	if (Name ~= TargetName) then
+function GearScore_GetPlayerScore()
+	local Target = "player"
+	local PlayerClass, PlayerEnglishClass = UnitClass(Target)
+	local GearScore = 0
+	local ItemScore = 0
+	local ItemCount = 0
+	local LevelTotal = 0
+	local ItemLink
+
+	for i = 1, 18 do
+		if ( i ~= 4 ) then
+			ItemLink = GetInventoryItemLink(Target, i)
+			GS_ItemLinkTable = {}
+			if ( ItemLink ) then
+				local _, ItemLink = GetItemInfo(ItemLink)
+				if ( GS_Settings["Detail"] == 1 ) then
+					GS_ItemLinkTable[i] = ItemLink
+				end
+				ItemScore, ItemLevel = GearScore_GetItemScore(ItemLink)
+				if ( i == 16 or i == 17 ) and ( PlayerEnglishClass == "HUNTER" ) then
+					ItemScore = ItemScore * 0.3164
+				end
+				if ( i == 18 ) and ( PlayerEnglishClass == "HUNTER" ) then
+					ItemScore = ItemScore * 5.3224
+				end
+				GearScore = GearScore + ItemScore
+				ItemCount = ItemCount + 1
+				LevelTotal = LevelTotal + ItemLevel
+			end
+		end
+	end
+
+	if ( ItemCount == 0 ) then
 		return 0, 0
 	end
 
-	if ( UnitIsPlayer(Target) ) then
-		local PlayerClass, PlayerEnglishClass = UnitClass(Target)
-		local GearScore = 0
-		local TempScore = 0
-		local ItemCount = 0
-		local LevelTotal = 0
-		local ItemLink
-
-		for i = 1, 18 do
-			if ( i ~= 4 ) then
-				ItemLink = GetInventoryItemLink(Target, i)
-				GS_ItemLinkTable = {}
-				if ( ItemLink ) then
-					local _, ItemLink = GetItemInfo(ItemLink)
-					if ( GS_Settings["Detail"] == 1 ) then
-						GS_ItemLinkTable[i] = ItemLink
-					end
-					TempScore, ItemLevel = GearScore_GetItemScore(ItemLink)
-					if ( i == 16 or i == 17 ) and ( PlayerEnglishClass == "HUNTER" ) then
-						TempScore = TempScore * 0.3164
-					end
-					if ( i == 18 ) and ( PlayerEnglishClass == "HUNTER" ) then
-						TempScore = TempScore * 5.3224
-					end
-					GearScore = GearScore + TempScore
-					ItemCount = ItemCount + 1
-					LevelTotal = LevelTotal + ItemLevel
-				end
-			end
-		end
-
-		if ( ItemCount == 0 ) then
-			return 0, 0
-		end
-
-		if ( GearScore <= 0 ) then
-			GearScore = 0
-		end
-
-		return floor(GearScore), floor(LevelTotal/ItemCount)
+	if ( GearScore <= 0 ) then
+		GearScore = 0
 	end
+
+	return floor(GearScore), floor(LevelTotal/ItemCount)
 end
 
 function GearScorePvPTrinketFix(ItemID, ItemLevel)
@@ -256,7 +250,7 @@ function MyPaperDoll()
 		return
 	end
 
-	local MyGearScore, MyItemLevel = GearScore_GetScore(UnitName("player"), "player")
+	local MyGearScore, MyItemLevel = GearScore_GetPlayerScore()
 	local Red, Blue, Green = GearScore_GetQuality(MyGearScore)
 	PersonalGearScore:SetText(MyGearScore)
 	PersonalGearScore:SetTextColor(Red, Green, Blue, 1)
