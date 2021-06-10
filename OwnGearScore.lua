@@ -10,26 +10,26 @@ function GearScore_OnEvent(GS_Nil, GS_EventName, GS_Prefix, GS_AddonMessage, GS_
 	end
 
 	if ( GS_EventName == "PLAYER_EQUIPMENT_CHANGED" ) then
-	    local MyGearScore, MyItemLevel = GearScore_GetScore(UnitName("player"), "player")
-    	PersonalGearScore:SetText(MyGearScore)
+		local MyGearScore, MyItemLevel = GearScore_GetScore(UnitName("player"), "player")
+		PersonalGearScore:SetText(MyGearScore)
 		PersonalItemLevel:SetText(MyItemLevel)
 		
 		local Red, Blue, Green = GearScore_GetQuality(MyGearScore)
 		PersonalGearScore:SetTextColor(Red, Green, Blue, 1)
 		PersonalItemLevel:SetTextColor(Red, Green, Blue, 1)
-  	end
+	end
 
 	if ( GS_EventName == "ADDON_LOADED" ) then
 		if ( GS_Prefix == "OwnGearScore" ) then
-      		if not ( GS_Settings ) then
+			if not ( GS_Settings ) then
 				GS_Settings = GS_DefaultSettings
 			end
-  			for i, v in pairs(GS_DefaultSettings) do
+			for i, v in pairs(GS_DefaultSettings) do
 				if not ( GS_Settings[i] ) then
 					GS_Settings[i] = GS_DefaultSettings[i]
 				end
 			end
-        end
+		end
 	end
 end
 
@@ -40,7 +40,7 @@ function GearScore_GetScore(Name, Target)
 	end
 
 	if ( UnitIsPlayer(Target) ) then
-	    local PlayerClass, PlayerEnglishClass = UnitClass(Target)
+		local PlayerClass, PlayerEnglishClass = UnitClass(Target)
 		local GearScore = 0
 		local TempScore = 0
 		local ItemCount = 0
@@ -49,14 +49,14 @@ function GearScore_GetScore(Name, Target)
 
 		for i = 1, 18 do
 			if ( i ~= 4 ) then
-        		ItemLink = GetInventoryItemLink(Target, i)
-        		GS_ItemLinkTable = {}
+				ItemLink = GetInventoryItemLink(Target, i)
+				GS_ItemLinkTable = {}
 				if ( ItemLink ) then
-        			local _, ItemLink = GetItemInfo(ItemLink)
-        			if ( GS_Settings["Detail"] == 1 ) then
+					local _, ItemLink = GetItemInfo(ItemLink)
+					if ( GS_Settings["Detail"] == 1 ) then
 						GS_ItemLinkTable[i] = ItemLink
 					end
-     				TempScore, ItemLevel = GearScore_GetItemScore(ItemLink)
+					TempScore, ItemLevel = GearScore_GetItemScore(ItemLink)
 					if ( i == 16 or i == 17 ) and ( PlayerEnglishClass == "HUNTER" ) then
 						TempScore = TempScore * 0.3164
 					end
@@ -77,7 +77,7 @@ function GearScore_GetScore(Name, Target)
 		if ( GearScore <= 0 ) then
 			GearScore = 0
 		end
- 
+
 		return floor(GearScore), floor(LevelTotal/ItemCount)
 	end
 end
@@ -85,7 +85,7 @@ end
 function GearScorePvPTrinketFix(ItemID, ItemLevel)
 	if (ItemID == 18852) or (ItemID == 18849) or (ItemID == 18846) or (ItemID == 18834) or (ItemID == 18851) or (ItemID == 18850) or (ItemID == 29592) or 
 		(ItemID == 18845) or (ItemID == 18853) or (ItemID == 18854) or (ItemID == 18858) or (ItemID == 29593) or (ItemID == 18857) or (ItemID == 18856) or 
-		(ItemID == 18862) or (ItemID == 18859)  or (ItemID == 18864) or (ItemID == 18863) then
+		(ItemID == 18862) or (ItemID == 18859) or (ItemID == 18864) or (ItemID == 18863) then
 		return 90
 	end
 
@@ -127,7 +127,7 @@ function GearScore_GetItemScore(ItemLink)
 	local Scale = 2.97
 	local ItemID = GetItemInfoFromHyperlink(ItemLink)
 	ItemLevel = GearScorePvPTrinketFix(ItemID, ItemLevel)
- 	if ( ItemRarity == 5 ) then
+	if ( ItemRarity == 5 ) then
 		QualityScale = 1.3
 		ItemRarity = 4
 	elseif ( ItemRarity == 1 ) then
@@ -138,16 +138,16 @@ function GearScore_GetItemScore(ItemLink)
 		ItemRarity = 2
 	end
 
-    if ( GS_ItemTypes[ItemEquipLoc] ) then
-        if ( ItemLevel > 92 ) then
+	if ( GS_ItemTypes[ItemEquipLoc] ) then
+		if ( ItemLevel > 92 ) then
 			Table = GS_Formula["A"]
 		else
 			Table = GS_Formula["B"]
 		end
 
 		if ( ItemRarity >= 2 ) and ( ItemRarity <= 4 ) then
-            local Red, Green, Blue = GearScore_GetQuality((floor(((ItemLevel - Table[ItemRarity].A) / Table[ItemRarity].B) * 1 * Scale)) * 16.98 )
-            GearScore = floor(((ItemLevel - Table[ItemRarity].A) / Table[ItemRarity].B) * GS_ItemTypes[ItemEquipLoc].SlotMOD * Scale * QualityScale)
+			local Red, Green, Blue = GearScore_GetQuality((floor(((ItemLevel - Table[ItemRarity].A) / Table[ItemRarity].B) * 1 * Scale)) * 16.98 )
+			GearScore = floor(((ItemLevel - Table[ItemRarity].A) / Table[ItemRarity].B) * GS_ItemTypes[ItemEquipLoc].SlotMOD * Scale * QualityScale)
 			if ( GearScore < 0 ) then
 				GearScore = 0
 				Red, Green, Blue = GearScore_GetQuality(1)
@@ -158,9 +158,9 @@ function GearScore_GetItemScore(ItemLink)
 
 			return GearScore, ItemLevel, GS_ItemTypes[ItemEquipLoc].ItemSlot, Red, Green, Blue, ItemEquipLoc, percent
 		end
-  	end
+	end
 
-  	return -1, ItemLevel, 50, 1, 1, 1, ItemEquipLoc, 1
+	return -1, ItemLevel, 50, 1, 1, 1, ItemEquipLoc, 1
 end
 
 function GearScore_GetQuality(ItemScore)
@@ -172,15 +172,15 @@ function GearScore_GetQuality(ItemScore)
 	local Blue = 0.1
 	local Green = 0.1
 	local GS_QualityDescription = "Legendary"
-   	if not ( ItemScore ) then
+	if not ( ItemScore ) then
 		return 0, 0, 0, "Trash"
 	end
 
 	for i = 0,6 do
 		if ( ItemScore > i * 1000 ) and ( ItemScore <= ( ( i + 1 ) * 1000 ) ) then
-		    local Red = GS_Quality[( i + 1 ) * 1000].Red["A"] + (((ItemScore - GS_Quality[( i + 1 ) * 1000].Red["B"])*GS_Quality[( i + 1 ) * 1000].Red["C"])*GS_Quality[( i + 1 ) * 1000].Red["D"])
-            local Blue = GS_Quality[( i + 1 ) * 1000].Green["A"] + (((ItemScore - GS_Quality[( i + 1 ) * 1000].Green["B"])*GS_Quality[( i + 1 ) * 1000].Green["C"])*GS_Quality[( i + 1 ) * 1000].Green["D"])
-            local Green = GS_Quality[( i + 1 ) * 1000].Blue["A"] + (((ItemScore - GS_Quality[( i + 1 ) * 1000].Blue["B"])*GS_Quality[( i + 1 ) * 1000].Blue["C"])*GS_Quality[( i + 1 ) * 1000].Blue["D"])
+			local Red = GS_Quality[( i + 1 ) * 1000].Red["A"] + (((ItemScore - GS_Quality[( i + 1 ) * 1000].Red["B"])*GS_Quality[( i + 1 ) * 1000].Red["C"])*GS_Quality[( i + 1 ) * 1000].Red["D"])
+			local Blue = GS_Quality[( i + 1 ) * 1000].Green["A"] + (((ItemScore - GS_Quality[( i + 1 ) * 1000].Green["B"])*GS_Quality[( i + 1 ) * 1000].Green["C"])*GS_Quality[( i + 1 ) * 1000].Green["D"])
+			local Green = GS_Quality[( i + 1 ) * 1000].Blue["A"] + (((ItemScore - GS_Quality[( i + 1 ) * 1000].Blue["B"])*GS_Quality[( i + 1 ) * 1000].Blue["C"])*GS_Quality[( i + 1 ) * 1000].Blue["D"])
 			--if not ( Red ) or not ( Blue ) or not ( Green ) then return 0.1, 0.1, 0.1, nil end
 			return Red, Green, Blue, GS_Quality[( i + 1 ) * 1000].Description
 		end
@@ -220,15 +220,15 @@ function GearScore_HookItem(ItemName, ItemLink, Tooltip)
 	end
 
 	local ItemScore, ItemLevel, EquipLoc, Red, Green, Blue, ItemEquipLoc, enchantPercent = GearScore_GetItemScore(ItemLink)
- 	if ( ItemScore >= 0 ) then
+	if ( ItemScore >= 0 ) then
 		if ( GS_Settings["Item"] == 1 ) then
-  			if ( ItemLevel ) then
+			if ( ItemLevel ) then
 				Tooltip:AddDoubleLine("GearScore: "..ItemScore, "(iLevel "..ItemLevel..")", Red, Blue, Green, Red, Blue, Green)
 				if ( PlayerEnglishClass == "HUNTER" ) then
 					if ( ItemEquipLoc == "INVTYPE_RANGEDRIGHT" ) or ( ItemEquipLoc == "INVTYPE_RANGED" ) then
 						Tooltip:AddLine("HunterScore: "..floor(ItemScore * 5.3224), Red, Blue, Green)
 					end
-					if ( ItemEquipLoc == "INVTYPE_2HWEAPON" ) or ( ItemEquipLoc == "INVTYPE_WEAPONMAINHAND" ) or ( ItemEquipLoc == "INVTYPE_WEAPONOFFHAND" ) or ( ItemEquipLoc == "INVTYPE_WEAPON" ) or ( ItemEquipLoc == "INVTYPE_HOLDABLE" )  then
+					if ( ItemEquipLoc == "INVTYPE_2HWEAPON" ) or ( ItemEquipLoc == "INVTYPE_WEAPONMAINHAND" ) or ( ItemEquipLoc == "INVTYPE_WEAPONOFFHAND" ) or ( ItemEquipLoc == "INVTYPE_WEAPON" ) or ( ItemEquipLoc == "INVTYPE_HOLDABLE" ) then
 						Tooltip:AddLine("HunterScore: "..floor(ItemScore * 0.3164), Red, Blue, Green)
 					end
 				end
@@ -238,17 +238,17 @@ function GearScore_HookItem(ItemName, ItemLink, Tooltip)
 					if ( ItemEquipLoc == "INVTYPE_RANGEDRIGHT" ) or ( ItemEquipLoc == "INVTYPE_RANGED" ) then
 						Tooltip:AddLine("HunterScore: "..floor(ItemScore * 5.3224), Red, Blue, Green)
 					end
-					if ( ItemEquipLoc == "INVTYPE_2HWEAPON" ) or ( ItemEquipLoc == "INVTYPE_WEAPONMAINHAND" ) or ( ItemEquipLoc == "INVTYPE_WEAPONOFFHAND" ) or ( ItemEquipLoc == "INVTYPE_WEAPON" ) or ( ItemEquipLoc == "INVTYPE_HOLDABLE" )  then
+					if ( ItemEquipLoc == "INVTYPE_2HWEAPON" ) or ( ItemEquipLoc == "INVTYPE_WEAPONMAINHAND" ) or ( ItemEquipLoc == "INVTYPE_WEAPONOFFHAND" ) or ( ItemEquipLoc == "INVTYPE_WEAPON" ) or ( ItemEquipLoc == "INVTYPE_HOLDABLE" ) then
 						Tooltip:AddLine("HunterScore: "..floor(ItemScore * 0.3164), Red, Blue, Green)
 					end
 				end
-    		end
-  		end
-	else
-	    if ( ItemLevel ) then
-	        Tooltip:AddLine("iLevel "..ItemLevel)
+			end
 		end
-    end
+	else
+		if ( ItemLevel ) then
+			Tooltip:AddLine("iLevel "..ItemLevel)
+		end
+	end
 end
 
 function MyPaperDoll()
@@ -256,9 +256,9 @@ function MyPaperDoll()
 		return
 	end
 
-	local MyGearScore, MyItemLevel  = GearScore_GetScore(UnitName("player"), "player")
+	local MyGearScore, MyItemLevel = GearScore_GetScore(UnitName("player"), "player")
 	local Red, Blue, Green = GearScore_GetQuality(MyGearScore)
-    PersonalGearScore:SetText(MyGearScore)
+	PersonalGearScore:SetText(MyGearScore)
 	PersonalGearScore:SetTextColor(Red, Green, Blue, 1)
 	PersonalItemLevel:SetText(MyItemLevel)
 	PersonalItemLevel:SetTextColor(Red, Green, Blue, 1)
@@ -292,7 +292,7 @@ function GS_MANSET(Command)
 		return
 	end
 
-    if ( strlower(Command) == "item" ) then
+	if ( strlower(Command) == "item" ) then
 		GS_Settings["Item"] = GS_ItemSwitch[GS_Settings["Item"]]
 		if ( GS_Settings["Item"] == 1 ) or ( GS_Settings["Item"] == 3 ) then
 			DEFAULT_CHAT_FRAME:AddMessage("Item Scores: On")
