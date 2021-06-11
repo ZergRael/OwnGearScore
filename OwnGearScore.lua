@@ -140,8 +140,9 @@ function GearScore_GetItemScore(ItemLink)
 		end
 
 		if (ItemRarity >= 2) and (ItemRarity <= 4) then
-			local Red, Green, Blue = GearScore_GetQuality((floor(((ItemLevel - Table[ItemRarity].A) / Table[ItemRarity].B) * 1 * Scale)) * 16.98)
-			GearScore = floor(((ItemLevel - Table[ItemRarity].A) / Table[ItemRarity].B) * GS_ItemTypes[ItemEquipLoc].SlotMOD * Scale * QualityScale)
+			local BaseScore = (ItemLevel - Table[ItemRarity].A) / Table[ItemRarity].B
+			local Red, Green, Blue = GearScore_GetQuality(floor(BaseScore * Scale) * 16.98)
+			GearScore = floor(BaseScore * GS_ItemTypes[ItemEquipLoc].SlotMOD * Scale * QualityScale)
 			if (GearScore < 0) then
 				GearScore = 0
 				Red, Green, Blue = GearScore_GetQuality(1)
@@ -166,21 +167,20 @@ function GearScore_GetQuality(ItemScore)
 	local Blue = 0.1
 	local Green = 0.1
 	local GS_QualityDescription = "Legendary"
-	if not (ItemScore) then
+	if not (ItemScore) or ItemScore < 0 then
 		return 0, 0, 0, "Trash"
 	end
 
-	for i = 0, 6 do
-		if (ItemScore > i * 1000) and (ItemScore <= ((i + 1) * 1000)) then
-			local Red = GS_Quality[(i + 1) * 1000].Red["A"] + (((ItemScore - GS_Quality[(i + 1) * 1000].Red["B"])*GS_Quality[(i + 1) * 1000].Red["C"])*GS_Quality[(i + 1) * 1000].Red["D"])
-			local Blue = GS_Quality[(i + 1) * 1000].Green["A"] + (((ItemScore - GS_Quality[(i + 1) * 1000].Green["B"])*GS_Quality[(i + 1) * 1000].Green["C"])*GS_Quality[(i + 1) * 1000].Green["D"])
-			local Green = GS_Quality[(i + 1) * 1000].Blue["A"] + (((ItemScore - GS_Quality[(i + 1) * 1000].Blue["B"])*GS_Quality[(i + 1) * 1000].Blue["C"])*GS_Quality[(i + 1) * 1000].Blue["D"])
-			--if not (Red) or not (Blue) or not (Green) then return 0.1, 0.1, 0.1, nil end
-			return Red, Green, Blue, GS_Quality[(i + 1) * 1000].Description
-		end
+	local QualityIndex = (floor(ItemScore / 1000) + 1) * 1000
+	if not GS_Quality[QualityIndex] then
+		return 255, 255, 255
 	end
 
-	return 255, 255, 255
+	local Red = GS_Quality[QualityIndex].Red["A"] + ((ItemScore - GS_Quality[QualityIndex].Red["B"]) * GS_Quality[QualityIndex].Red["C"] * GS_Quality[QualityIndex].Red["D"])
+	local Blue = GS_Quality[QualityIndex].Green["A"] + ((ItemScore - GS_Quality[QualityIndex].Green["B"]) * GS_Quality[QualityIndex].Green["C"] * GS_Quality[QualityIndex].Green["D"])
+	local Green = GS_Quality[QualityIndex].Blue["A"] + ((ItemScore - GS_Quality[QualityIndex].Blue["B"]) * GS_Quality[QualityIndex].Blue["C"] * GS_Quality[QualityIndex].Blue["D"])
+
+	return Red, Green, Blue, GS_Quality[QualityIndex].Description
 end
 
 function GearScore_HookSetItem()
